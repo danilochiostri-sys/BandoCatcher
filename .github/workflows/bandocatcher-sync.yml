@@ -7,6 +7,9 @@ on:
     paths:
       - '.github/workflows/bandocatcher-sync.yml'
       - 'ingestion/connectors/inpa.py'
+      - 'ingestion/connectors/ted.py'
+      - 'ingestion/connectors/funding_tenders.py'
+      - 'ingestion/sync.py'
   schedule:
     - cron: "11 */3 * * *"
   workflow_dispatch:
@@ -17,7 +20,6 @@ permissions:
 jobs:
   sync-bandocatcher:
     runs-on: ubuntu-latest
-    defaults:
     steps:
       - uses: actions/checkout@v4
       - name: Python
@@ -27,7 +29,6 @@ jobs:
       - name: Sync TED + Funding & Tenders + inPA
         run: python ingestion/sync.py
       - name: Commit dataset
-        working-directory: .
         run: |
           git config user.name "BandoCatcher Bot"
           git config user.email "actions@users.noreply.github.com"
