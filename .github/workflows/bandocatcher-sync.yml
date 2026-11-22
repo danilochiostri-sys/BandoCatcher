@@ -17,11 +17,18 @@ on:
 permissions:
   contents: write
 
+# Evita che due sincronizzazioni aggiornino main contemporaneamente.
+concurrency:
+  group: bandocatcher-sync-main
+  cancel-in-progress: false
+
 jobs:
   sync-bandocatcher:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Python
         uses: actions/setup-python@v5
         with:
@@ -35,4 +42,6 @@ jobs:
           git add data/opportunities.js data/sync-status.json
           git diff --cached --quiet && exit 0
           git commit -m "BandoCatcher: aggiorna opportunità"
+          # Integra eventuali commit arrivati dopo il checkout prima del push.
+          git pull --rebase origin main
           git push
