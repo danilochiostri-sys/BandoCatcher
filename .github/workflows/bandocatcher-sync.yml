@@ -34,7 +34,10 @@ jobs:
         with:
           python-version: "3.12"
       - name: Sync TED + Funding & Tenders + inPA
-        run: python ingestion/sync.py
+        working-directory: ${{ github.workspace }}
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m ingestion.sync
       - name: Commit dataset
         run: |
           git config user.name "BandoCatcher Bot"
